@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   bool verified = Verify((char *)message, signature, public_key, KEY_LENGTH);
   assert(verified == true);
 
-  // keys, byte arrays & signatures are allocated & must be freed by the caller
+  // Keys, byte arrays & signatures are allocated & must be freed by the caller
   DCRYPT_PKEY_free(private_key);
   DCRYPT_PKEY_free(public_key);
   free(message);
