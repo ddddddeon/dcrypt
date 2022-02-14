@@ -75,7 +75,6 @@ bool KeyToFile(EVP_PKEY *key, char *out_file, bool is_private) {
   BIO *file_BIO = NULL;
   file_BIO = BIO_new_file(out_file, "w");
   CHECK_NULL(file_BIO, "Could not load file for writing", false);
-
   CHECK_EQUALS(true, SetKey(file_BIO, key, is_private), BIO_free(file_BIO);
                return false);
   BIO_free(file_BIO);
@@ -171,7 +170,6 @@ unsigned char *GenerateRandomBytes(int size) {
   int written = RAND_bytes(bytes, size);
   CHECK_EQUALS(1, written, return NULL);
   bytes[size - 1] = '\0';
-
   return bytes;
 }
 
