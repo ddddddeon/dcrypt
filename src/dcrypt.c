@@ -50,19 +50,12 @@ namespace dcrypt {
 #endif
 
 EVP_PKEY *GenerateKey(int bits) {
-  if (bits < DCRYPT_MIN_RSA_BITS) {
+  if (bits < DCRYPT_MIN_RSA_BITS || bits > DCRYPT_MAX_RSA_BITS) {
     if (DCRYPT_VERBOSE == 1) {
       printf(
-          "I'm afraid I can't let you generate a key shorter than %d bits.\n",
-          DCRYPT_MIN_RSA_BITS);
-    }
-    return NULL;
-  }
-
-  if (bits > DCRYPT_MAX_RSA_BITS) {
-    if (DCRYPT_VERBOSE == 1) {
-      printf("I'm afraid I can't let you generate a key longer than %d bits.\n",
-             DCRYPT_MAX_RSA_BITS);
+          "RSA key length must be longer than %d bits and shorter than %d "
+          "bits.\n",
+          DCRYPT_MIN_RSA_BITS, DCRYPT_MAX_RSA_BITS);
     }
     return NULL;
   }
