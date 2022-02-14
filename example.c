@@ -10,25 +10,24 @@ int main(int argc, char *argv[]) {
   bool written = KeyToFile(private_key, "example_rsa", true);
   assert(written == true);
 
+  // Write a public key to PEM-encoded file (private = false)
   written = KeyToFile(private_key, "example_rsa.pub", false);
   assert(written == true);
 
-  // Load a key from file
-  DCRYPT_PKEY *loaded_public_key = FileToKey("./example_rsa.pub", false);
-  assert(loaded_public_key != NULL);
+  // Load a public or private key from PEM-encoded file
+  DCRYPT_PKEY *public_key = FileToKey("./example_rsa.pub", false);
+  assert(public_key != NULL);
 
-  unsigned char *loaded_public_key_string =
-      KeyToString(loaded_public_key, false);
-  printf("%s\n", loaded_public_key_string);
-  printf("*****\n");
+  // Convert a key to string
+  unsigned char *public_key_string = KeyToString(public_key, false);
+  printf("%s\n", public_key_string);
 
   // Sign a message with the private key
   char *message = "message to be signed";
   unsigned char *signature = Sign(message, private_key);
   assert(signature != NULL);
 
-  bool verified = Verify(message, signature, loaded_public_key);
+  // Verify a message with the public key
+  bool verified = Verify(message, signature, public_key);
   assert(verified == true);
-
-  printf("%d\n", verified);
 }
