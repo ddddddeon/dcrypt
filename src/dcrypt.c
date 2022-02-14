@@ -31,10 +31,6 @@
 #define CHECK_MD(ret, handle) \
   CHECK_NOT_EQUAL(1, ret, "Message Digest failed", EVP_MD_CTX_free(ctx); handle)
 
-#ifdef __cplusplus
-namespace dcrypt {
-#endif
-
 DCRYPT_PKEY *GenerateKey(int bits) {
   if (bits < DCRYPT_MIN_RSA_BITS || bits > DCRYPT_MAX_RSA_BITS) {
     if (DCRYPT_VERBOSE == 1) {
@@ -212,7 +208,3 @@ unsigned char *GenerateRandomBytes(int size) {
 }
 
 // TODO generate an AES key, and encrypt/decrypt instead of sign/verify
-
-#ifdef __cplusplus
-}  // namespace dcrypt
-#endif

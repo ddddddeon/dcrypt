@@ -8,6 +8,8 @@ LIB_DIR=/usr/lib/
 LIBNAME=lib$(NAME).so
 LIB_OUTFILE=bin/$(LIBNAME)
 INFILES=$(wildcard src/*.c)
+HEADER_INFILES=$(wildcard src/*.h)
+HEADER_OUTPATH=/usr/include/
 TEST_INFILES=$(wildcard test/*.c)
 TEST_OUTFILE=bin/test
 
@@ -33,8 +35,10 @@ findBin:
 	@[ -d bin ];
 
 install:
-	@mv $(LIB_OUTFILE) $(LIB_DIR)$(LIBNAME); \
-	echo "[OK] installed to $(LIB_DIR)$(NAME)";
+	@cp $(LIB_OUTFILE) $(LIB_DIR)$(LIBNAME); \
+	for FILE in $(HEADER_INFILES); do \
+		cp $$FILE $(HEADER_OUTPATH)$$(basename $${FILE%%.*}.h); \
+	done;
 
 check:
 	@valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./bin/test;

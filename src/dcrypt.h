@@ -20,8 +20,9 @@
 #else
 #define DCRYPT_VERBOSE 1
 #endif
+
 #ifdef __cplusplus
-namespace dcrypt {
+extern "C" {
 #endif
 
 #define DCRYPT_PKEY_free(key) \
@@ -42,7 +43,7 @@ bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
 unsigned char *GenerateRandomBytes(int size);
 
 #ifdef __cplusplus
-}  // namespace dcrypt
+}  // extern "C"
 #endif
 
 #endif /* !DCRYPT_H */
