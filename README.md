@@ -58,3 +58,8 @@ int main(int argc, char *argv[]) {
   free(public_key);
   free(private_key);
 ```
+
+## TODOs
+- Encrypt/Decrypt using RSA keys
+- AES key creation
+- Encrypt/Decrypt using AES key
