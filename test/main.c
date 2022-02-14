@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     printf("Could not generate signature!\n");
     return false;
   } else {
-    printf("Signed message with private key-- signature: %x\n", sig);
+    printf("Signed message with private key-- signature: %s\n", sig);
   }
 
   printf("Verifying message with public key...\n");
@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
   bytes = GenerateRandomBytes(bytes_length);
   assert(bytes != NULL);
   for (int i = 0; i < bytes_length; i++) {
-    printf("%x", (char*)bytes[i]);
+    printf("%x", (unsigned int)bytes[i]);
   }
   printf("\n");
 
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
   assert(strcmp((char*)bytes2, (char*)bytes) != 0);
 
   for (int i = 0; i < bytes_length; i++) {
-    printf("%x", (char*)bytes2[i]);
+    printf("%x", (unsigned int)bytes2[i]);
   }
   printf("\n");
 
