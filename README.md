@@ -26,7 +26,7 @@ sudo make install
 
 int main(int argc, char *argv[]) {
   // Generate a 4096-bit RSA key
-  DCRYPT_PKEY *private_key = GenerateKey(2048);
+  DCRYPT_PKEY *private_key = GenerateKey(4096);
   assert(private_key != NULL);
 
   // Write a private key to PEM-encoded file (private = true)
