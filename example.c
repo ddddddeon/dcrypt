@@ -22,8 +22,10 @@ int main(int argc, char *argv[]) {
   unsigned char *public_key_string = KeyToString(public_key, false);
   printf("%s\n", public_key_string);
 
+  // Generate N random bytes
+  unsigned char *message = GenerateRandomBytes(32);
+
   // Sign a message with the private key
-  char *message = "message to be signed";
   unsigned char *signature = Sign(message, private_key);
   assert(signature != NULL);
 
@@ -31,6 +33,7 @@ int main(int argc, char *argv[]) {
   bool verified = Verify(message, signature, public_key);
   assert(verified == true);
 
+  free(message);
   free(signature);
   DCRYPT_PKEY_free(public_key);
   DCRYPT_PKEY_free(private_key);
