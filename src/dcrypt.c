@@ -10,6 +10,10 @@
 #define DCRYPT_MIN_RSA_BITS 1024
 #endif
 
+#ifndef DCRYPT_MAX_RSA_BITS
+#define DCRYPT_MAX_RSA_BITS 65535
+#endif
+
 #ifndef DCRYPT_VERBOSE
 #define DCRYPT_VERBOSE 0
 #else
@@ -51,6 +55,14 @@ EVP_PKEY *GenerateKey(int bits) {
       printf(
           "I'm afraid I can't let you generate a key shorter than %d bits.\n",
           DCRYPT_MIN_RSA_BITS);
+    }
+    return NULL;
+  }
+
+  if (bits > DCRYPT_MAX_RSA_BITS) {
+    if (DCRYPT_VERBOSE == 1) {
+      printf("I'm afraid I can't let you generate a key longer than %d bits.\n",
+             DCRYPT_MAX_RSA_BITS);
     }
     return NULL;
   }

@@ -1,7 +1,7 @@
 NAME=dcrypt
 LIBS=-lcrypto
 TEST_LIBS=-lcrypto -L./bin -ldcrypt
-CFLAGS=-g -Wall -DDCRYPT_VERBOSE #-DDCRYPT_MIN_RSA_BITS=2048
+CFLAGS=-g -Wall -DDCRYPT_VERBOSE #-DDCRYPT_MIN_RSA_BITS=1024 -DDCRYPT_MAX_RSA_BITS=65535
 
 CC=clang
 LIB_DIR=/usr/lib/
@@ -18,8 +18,8 @@ $(NAME):
 	for FILE in $(INFILES); do \
   	$(CC) $(CFLAGS) -c -fPIC $$FILE -o bin/$$(basename $${FILE%%.*}).o;\
 	done; \
-	echo "[OK] created object file(s) in ./bin/"; \
-	$(CC) -shared -o $(LIB_OUTFILE) $(wildcard bin/*.o)
+	$(CC) -shared -o $(LIB_OUTFILE) $(wildcard bin/*.o); \
+	$(CC) -o $(TEST_OUTFILE) $(TEST_INFILES) $(LIB_OUTFILE) $(CFLAGS) -fuse-ld=lld $(LIBS);
 
 clean:	findBin
 	@rm -rf bin;
@@ -40,11 +40,6 @@ trace:
 all: $(NAME) findBin install
 
 rebuild: clean $(NAME) install
-
-tests:
-	@set -e; \
-	if [ ! -d bin ]; then mkdir bin; fi; \
-	$(CC) -o $(TEST_OUTFILE) $(TEST_INFILES) $(LIB_OUTFILE) $(CFLAGS) -fuse-ld=lld $(LIBS);
 
 flush:
 	rm ./id_rsa*;

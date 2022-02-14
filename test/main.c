@@ -13,6 +13,9 @@ int main(int argc, char* argv[]) {
   EVP_PKEY* short_privkey = GenerateKey(512);
   assert(short_privkey == NULL);
 
+  EVP_PKEY* long_privkey = GenerateKey(65536);
+  assert(long_privkey == NULL);
+
   unsigned char* privkey_string = KeyToString(privkey, true);
   assert(privkey_string != NULL);
 
