@@ -1,9 +1,11 @@
 NAME=dcrypt
-LIBS=-lcrypto
-TEST_LIBS=-lcrypto -L./bin -ldcrypt
-CFLAGS=-g -Wall -DDCRYPT_VERBOSE -I./src#-DDCRYPT_MIN_RSA_BITS=1024 -DDCRYPT_MAX_RSA_BITS=65535
-
 CC=clang
+LD=lld
+LIBS=-lcrypto
+INCLUDES=-I./src
+TEST_LIBS=-lcrypto -L./bin -ldcrypt
+USE_LINKER=-fuse-ld=$(LD)
+CFLAGS=-g -Wall -DDCRYPT_VERBOSE $(INCLUDES)  #-DDCRYPT_MIN_RSA_BITS=1024 -DDCRYPT_MAX_RSA_BITS=65535
 LIB_DIR=/usr/lib/
 LIBNAME=lib$(NAME).so
 LIB_OUTFILE=bin/$(LIBNAME)
@@ -18,14 +20,14 @@ TEST_OUTFILE=bin/test
 $(NAME): library
 	set -e; \
 	$(CC) -shared -o $(LIB_OUTFILE) $(wildcard bin/*.o); \
-	$(CC) -o $(TEST_OUTFILE) $(TEST_INFILES) $(LIB_OUTFILE) $(CFLAGS) -fuse-ld=lld $(LIBS); \
-	$(CC) -o bin/example ./example.c $(LIB_OUTFILE) $(CFLAGS) -fuse-ld=lld $(LIBS);
+	$(CC) -o $(TEST_OUTFILE) $(TEST_INFILES) $(LIB_OUTFILE) $(CFLAGS) $(USE_LINKER) $(LIBS); \
+	$(CC) -o bin/example ./example.c $(LIB_OUTFILE) $(CFLAGS) $(USE_LINKER) $(LIBS);
 
 library:
 	set -e; \
 	if [ ! -d bin ]; then mkdir bin; fi; \
 	for FILE in $(INFILES); do \
-		$(CC) $(CFLAGS) -c -fPIC $$FILE -o bin/$$(basename $${FILE%%.*}).o;\
+		$(CC) $(CFLAGS)-c -fPIC $$FILE -o bin/$$(basename $${FILE%%.*}).o;\
 	done; \
 
 clean:	findBin
