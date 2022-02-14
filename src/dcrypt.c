@@ -6,24 +6,25 @@
 #include <openssl/rsa.h>
 #include <string.h>
 
-#define CHECK_EQUALS(val, ret, handle)                        \
-  do {                                                        \
-    if (ret != val) {                                         \
-      printf("%s (%s:%d)\n", "Error at", __FILE__, __LINE__); \
-      handle;                                                 \
-    }                                                         \
+#define CHECK_EQUALS(val, ret, message, handle)            \
+  do {                                                     \
+    if (ret != val) {                                      \
+      printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
+      handle;                                              \
+    }                                                      \
   } while (0)
 
-#define CHECK_NULL(func, message, retval)                             \
-  do {                                                                \
-    if (func == NULL) {                                               \
-      printf("%s (%s:%d: %s)\n", message, __FILE__, __LINE__, #func); \
-      return retval;                                                  \
-    }                                                                 \
+#define CHECK_NULL(ret, message, retval)                   \
+  do {                                                     \
+    if (ret == NULL) {                                     \
+      printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
+      return retval;                                       \
+    }                                                      \
   } while (0)
 
-#define CHECK_MD(func, retval) \
-  CHECK_EQUALS(1, func, EVP_MD_CTX_free(ctx); return retval)
+#define CHECK_MD(func, retval)                                         \
+  CHECK_EQUALS(1, func, "Message Digest failed", EVP_MD_CTX_free(ctx); \
+               return retval)
 
 #ifdef __cplusplus
 namespace dcrypt {
@@ -35,7 +36,7 @@ EVP_PKEY *GenerateKey() {
   CHECK_NULL(ctx, "Could not create EVP_PKEY context", NULL);
 
   int ret = EVP_PKEY_keygen_init(ctx);
-  CHECK_EQUALS(1, ret, return NULL);
+  CHECK_EQUALS(1, ret, "Could not initialize EVP_PKEY context", return NULL);
 
   EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048);
   EVP_PKEY *key = NULL;
@@ -51,7 +52,7 @@ bool SetKey(BIO *bio, EVP_PKEY *key, bool is_private) {
   } else {
     ret = PEM_write_bio_PUBKEY(bio, key);
   }
-  CHECK_EQUALS(1, ret, return false);
+  CHECK_EQUALS(1, ret, "Could not write key to output stream", return false);
 
   return true;
 }
@@ -67,7 +68,7 @@ EVP_PKEY *GetKey(BIO *bio, bool is_private) {
 
   EVP_PKEY *key = NULL;
   key = EVP_PKEY_new();
-  CHECK_NULL(key, "Could not allocat EVP_PKEY", NULL);
+  CHECK_NULL(key, "Could not allocate EVP_PKEY", NULL);
 
   EVP_PKEY_assign_RSA(key, rsa);
   return key;
@@ -80,7 +81,7 @@ bool KeyToFile(EVP_PKEY *key, char *out_file, bool is_private) {
 
   int ret = SetKey(file_BIO, key, is_private);
   BIO_free(file_BIO);
-  CHECK_EQUALS(true, ret, return false);
+  CHECK_EQUALS(true, ret, "Could not write key to file", return false);
 
   return true;
 }
@@ -92,7 +93,8 @@ unsigned char *KeyToString(EVP_PKEY *key, bool is_private) {
   CHECK_NULL(key_BIO, "Could not allocate memory for writing", NULL);
 
   ret = SetKey(key_BIO, key, is_private);
-  CHECK_EQUALS(1, ret, BIO_free(key_BIO); return NULL);
+  CHECK_EQUALS(1, ret, "Could not write key to string", BIO_free(key_BIO);
+               return NULL);
 
   int key_length = BIO_pending(key_BIO);
   unsigned char *key_string = (unsigned char *)malloc(key_length + 1);
@@ -180,7 +182,7 @@ unsigned char *GenerateRandomBytes(int size) {
   CHECK_NULL(bytes, "Could not allocate memory for random bytes", NULL);
 
   int written = RAND_bytes(bytes, size);
-  CHECK_EQUALS(1, written, return NULL);
+  CHECK_EQUALS(1, written, "Could not generate random bytes", return NULL);
 
   bytes[size - 1] = '\0';
   return bytes;
