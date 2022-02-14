@@ -1,7 +1,7 @@
 NAME=dcrypt
 LIBS=-lcrypto
 TEST_LIBS=-lcrypto -L./bin -ldcrypt
-CFLAGS=-g -Wall  #-DDEBUG
+CFLAGS=-g -Wall -DDCRYPT_VERBOSE #-DDCRYPT_MIN_RSA_BITS=2048
 
 CC=clang
 LIB_DIR=/usr/lib/

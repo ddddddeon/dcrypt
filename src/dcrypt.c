@@ -6,14 +6,22 @@
 #include <openssl/rsa.h>
 #include <string.h>
 
-#ifndef MIN_RSA_BITS
-#define MIN_RSA_BITS 1024
+#ifndef DCRYPT_MIN_RSA_BITS
+#define DCRYPT_MIN_RSA_BITS 1024
 #endif
 
-#define HANDLE_ERROR(message, handle)                    \
-  do {                                                   \
-    printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
-    handle;                                              \
+#ifndef DCRYPT_VERBOSE
+#define DCRYPT_VERBOSE 0
+#else
+#define DCRYPT_VERBOSE 1
+#endif
+
+#define HANDLE_ERROR(message, handle)                      \
+  do {                                                     \
+    if (DCRYPT_VERBOSE == 1) {                             \
+      printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
+    }                                                      \
+    handle;                                                \
   } while (0)
 
 #define CHECK_NOT_EQUAL(val, ret, message, handle) \
@@ -38,9 +46,12 @@ namespace dcrypt {
 #endif
 
 EVP_PKEY *GenerateKey(int bits) {
-  if (bits < MIN_RSA_BITS) {
-    printf("I'm afraid I can't let you generate a key shorter than %d bits.\n",
-           MIN_RSA_BITS);
+  if (bits < DCRYPT_MIN_RSA_BITS) {
+    if (DCRYPT_VERBOSE == 1) {
+      printf(
+          "I'm afraid I can't let you generate a key shorter than %d bits.\n",
+          DCRYPT_MIN_RSA_BITS);
+    }
     return NULL;
   }
 
