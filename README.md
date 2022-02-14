@@ -8,7 +8,7 @@ This library was written for the education of the author and as such is absolute
 ## Install
 This library is targeted to Linux only and depends on `libssl`.
 
-The Makefile uses `clang` compiler but can be replaced with `gcc` if clang is not installed.
+The Makefile uses the `clang` compiler and `lld` linker, but can be replaced with `gcc` and `ld` if LLVM tools are not installed.
 
 To download and install, run
 
