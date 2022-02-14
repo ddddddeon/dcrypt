@@ -28,12 +28,12 @@ int main(int argc, char *argv[]) {
   unsigned char *message = GenerateRandomBytes(32);
 
   // Sign a message with the private key
-  unsigned char *signature = Sign(message, private_key);
+  unsigned char *signature = Sign((char *)message, private_key);
   assert(signature != NULL);
 
   // Verify a message with the public key
   // Pass in the key length so Verify() knows how big to make the signature
-  bool verified = Verify(message, signature, public_key, KEY_LENGTH);
+  bool verified = Verify((char *)message, signature, public_key, KEY_LENGTH);
   assert(verified == true);
 
   // keys, byte arrays & signatures are allocated & must be freed by the caller

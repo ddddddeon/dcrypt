@@ -181,7 +181,7 @@ unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
 
 bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
             int key_length) {
-  size_t sig_length = key_length / 8;
+  size_t sig_length = key_length / sizeof(unsigned char *);
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
