@@ -1,19 +1,18 @@
 #include <assert.h>
 #include <malloc.h>
-#include <openssl/evp.h>
 #include <stdbool.h>
 #include <string.h>
 
 #include "../src/dcrypt.h"
 
 int main(int argc, char* argv[]) {
-  EVP_PKEY* privkey = GenerateKey(2048);
+  DCRYPT_PKEY* privkey = GenerateKey(2048);
   assert(privkey != NULL);
 
-  EVP_PKEY* short_privkey = GenerateKey(512);
+  DCRYPT_PKEY* short_privkey = GenerateKey(512);
   assert(short_privkey == NULL);
 
-  EVP_PKEY* long_privkey = GenerateKey(65536);
+  DCRYPT_PKEY* long_privkey = GenerateKey(65536);
   assert(long_privkey == NULL);
 
   unsigned char* privkey_string = KeyToString(privkey, true);
@@ -22,7 +21,7 @@ int main(int argc, char* argv[]) {
   unsigned char* pubkey_string = KeyToString(privkey, false);
   assert(pubkey_string != NULL);
 
-  EVP_PKEY* pubkey = StringToKey(pubkey_string, false);
+  DCRYPT_PKEY* pubkey = StringToKey(pubkey_string, false);
   assert(pubkey != NULL);
 
   unsigned char* pubkey_string2 = KeyToString(pubkey, false);
@@ -32,8 +31,8 @@ int main(int argc, char* argv[]) {
   assert(KeyToFile(privkey, "id_rsa", true));
   assert(KeyToFile(privkey, "id_rsa.pub", false));
 
-  EVP_PKEY* opened_privkey = FileToKey("./id_rsa", true);
-  EVP_PKEY* opened_pubkey = FileToKey("./id_rsa.pub", false);
+  DCRYPT_PKEY* opened_privkey = FileToKey("./id_rsa", true);
+  DCRYPT_PKEY* opened_pubkey = FileToKey("./id_rsa.pub", false);
 
   assert(opened_privkey != NULL);
   assert(opened_pubkey != NULL);

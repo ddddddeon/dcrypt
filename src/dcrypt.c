@@ -49,12 +49,12 @@
 namespace dcrypt {
 #endif
 
-EVP_PKEY *GenerateKey(int bits) {
+DCRYPT_PKEY *GenerateKey(int bits) {
   if (bits < DCRYPT_MIN_RSA_BITS || bits > DCRYPT_MAX_RSA_BITS) {
     if (DCRYPT_VERBOSE == 1) {
       printf(
           "RSA key length must be longer than %d bits and shorter than %d "
-          "bits.\n",
+          "bits\n",
           DCRYPT_MIN_RSA_BITS, DCRYPT_MAX_RSA_BITS);
     }
     return NULL;
@@ -74,7 +74,7 @@ EVP_PKEY *GenerateKey(int bits) {
   return key;
 }
 
-bool SetKey(BIO *bio, EVP_PKEY *key, bool is_private) {
+bool SetKey(BIO *bio, DCRYPT_PKEY *key, bool is_private) {
   int ret = 0;
   if (is_private) {
     ret = PEM_write_bio_PrivateKey(bio, key, NULL, NULL, 0, 0, NULL);
@@ -86,7 +86,7 @@ bool SetKey(BIO *bio, EVP_PKEY *key, bool is_private) {
   return true;
 }
 
-EVP_PKEY *GetKey(BIO *bio, bool is_private) {
+DCRYPT_PKEY *GetKey(BIO *bio, bool is_private) {
   RSA *rsa = NULL;
   if (is_private) {
     PEM_read_bio_RSAPrivateKey(bio, &rsa, NULL, NULL);
@@ -103,7 +103,7 @@ EVP_PKEY *GetKey(BIO *bio, bool is_private) {
   return key;
 }
 
-bool KeyToFile(EVP_PKEY *key, char *out_file, bool is_private) {
+bool KeyToFile(DCRYPT_PKEY *key, char *out_file, bool is_private) {
   BIO *file_BIO = NULL;
   file_BIO = BIO_new_file(out_file, "w");
   CHECK_EQUAL(NULL, file_BIO, "Could not load file for writing", return false);
@@ -115,7 +115,7 @@ bool KeyToFile(EVP_PKEY *key, char *out_file, bool is_private) {
   return true;
 }
 
-unsigned char *KeyToString(EVP_PKEY *key, bool is_private) {
+unsigned char *KeyToString(DCRYPT_PKEY *key, bool is_private) {
   int ret = 0;
   BIO *key_BIO = NULL;
   key_BIO = BIO_new(BIO_s_mem());
@@ -141,7 +141,7 @@ unsigned char *KeyToString(EVP_PKEY *key, bool is_private) {
   return key_string;
 }
 
-EVP_PKEY *FileToKey(char *in_file, bool is_private) {
+DCRYPT_PKEY *FileToKey(char *in_file, bool is_private) {
   BIO *file_BIO = NULL;
   file_BIO = BIO_new_file(in_file, "r");
   CHECK_EQUAL(NULL, file_BIO, "Could not open file for reading", return NULL);
@@ -154,7 +154,7 @@ EVP_PKEY *FileToKey(char *in_file, bool is_private) {
   return key;
 }
 
-EVP_PKEY *StringToKey(unsigned char *key_string, bool is_private) {
+DCRYPT_PKEY *StringToKey(unsigned char *key_string, bool is_private) {
   BIO *key_BIO = NULL;
   key_BIO = BIO_new_mem_buf(key_string, -1);
   CHECK_EQUAL(NULL, key_BIO, "Could not allocate memory buffer for string",
@@ -168,7 +168,7 @@ EVP_PKEY *StringToKey(unsigned char *key_string, bool is_private) {
   return key;
 }
 
-unsigned char *Sign(char *message, EVP_PKEY *key) {
+unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
   size_t sig_length;
   EVP_MD_CTX *ctx = NULL;
 
@@ -192,7 +192,7 @@ unsigned char *Sign(char *message, EVP_PKEY *key) {
   return sig;
 }
 
-bool Verify(char *message, unsigned char *signature, EVP_PKEY *pubkey) {
+bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
   size_t sig_length = 256;
   EVP_MD_CTX *ctx = NULL;
 
