@@ -1,5 +1,28 @@
-#include <assert.h>
+# dcrypt
+
+A utility library that wraps commonly-used cryptographic operations using OpenSSL's libcrypto API
+
+## IMPORTANT
+This library was written for the education of the author and as such is absolutely **NOT** production-ready code!
+
+## Install
+This library is targeted to Linux only and depends on `libssl`.
+
+The Makefile uses `clang` compiler but can be replaced with `gcc` if clang is not installed.
+
+To download and install, run
+
+```
+git clone https://github.com/ddddddeon/dcrypt.git
+cd dcrypt
+make
+sudo make install
+```
+
+## Usage
+```c
 #include <dcrypt.h>
+#include <assert.h>
 
 int main(int argc, char *argv[]) {
   // Generate a 4096-bit RSA key
@@ -34,4 +57,4 @@ int main(int argc, char *argv[]) {
   free(signature);
   free(public_key);
   free(private_key);
-}
+```
