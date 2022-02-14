@@ -1,9 +1,11 @@
 #include <assert.h>
 #include <dcrypt.h>
 
+#define KEY_LENGTH 4096
+
 int main(int argc, char *argv[]) {
   // Generate a 4096-bit RSA key
-  DCRYPT_PKEY *private_key = GenerateKey(4096);
+  DCRYPT_PKEY *private_key = GenerateKey(KEY_LENGTH);
   assert(private_key != NULL);
 
   // Write a private key to PEM-encoded file (private = true)
@@ -30,7 +32,7 @@ int main(int argc, char *argv[]) {
   assert(signature != NULL);
 
   // Verify a message with the public key
-  bool verified = Verify(message, signature, public_key);
+  bool verified = Verify(message, signature, public_key, KEY_LENGTH);
   assert(verified == true);
 
   // keys, byte arrays & signatures are allocated & must be freed by the caller

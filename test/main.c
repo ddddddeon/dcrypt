@@ -5,8 +5,10 @@
 
 #include "../src/dcrypt.h"
 
+#define PUBKEY_LENGTH 2048
+
 int main(int argc, char* argv[]) {
-  DCRYPT_PKEY* privkey = GenerateKey(2048);
+  DCRYPT_PKEY* privkey = GenerateKey(PUBKEY_LENGTH);
   assert(privkey != NULL);
 
   DCRYPT_PKEY* short_privkey = GenerateKey(512);
@@ -61,7 +63,7 @@ int main(int argc, char* argv[]) {
 
   printf("Verifying message with public key...\n");
 
-  bool verified = Verify(message, sig, opened_pubkey);
+  bool verified = Verify(message, sig, opened_pubkey, PUBKEY_LENGTH);
   if (verified) {
     printf("Verified! Signature is valid for message: %s\n", message);
   } else {
@@ -71,7 +73,7 @@ int main(int argc, char* argv[]) {
 
   unsigned char *sig2 = (unsigned char *) "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf";
 
-  bool verified2 = Verify(message, sig2, opened_pubkey);
+  bool verified2 = Verify(message, sig2, opened_pubkey, PUBKEY_LENGTH);
   if (verified2) {
     printf("Verified?! This shouldn't succeed...\n");
     return false;
@@ -80,7 +82,7 @@ int main(int argc, char* argv[]) {
   }
 
   char* message2 = "chris is not cool?";
-  bool verified3 = Verify(message2, sig, opened_pubkey);
+  bool verified3 = Verify(message2, sig, opened_pubkey, PUBKEY_LENGTH);
   if (verified3) {
     printf("Verified?! This shouldn't succeed...\n");
     return false;

@@ -6,20 +6,6 @@
 #include <openssl/rsa.h>
 #include <string.h>
 
-#ifndef DCRYPT_MIN_RSA_BITS
-#define DCRYPT_MIN_RSA_BITS 1024
-#endif
-
-#ifndef DCRYPT_MAX_RSA_BITS
-#define DCRYPT_MAX_RSA_BITS 65535
-#endif
-
-#ifndef DCRYPT_VERBOSE
-#define DCRYPT_VERBOSE 0
-#else
-#define DCRYPT_VERBOSE 1
-#endif
-
 #define HANDLE_ERROR(message, handle)                      \
   do {                                                     \
     if (DCRYPT_VERBOSE == 1) {                             \
@@ -193,8 +179,9 @@ unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
   return sig;
 }
 
-bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
-  size_t sig_length = 256;
+bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
+            int key_length) {
+  size_t sig_length = key_length / 8;
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
