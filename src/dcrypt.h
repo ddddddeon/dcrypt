@@ -8,9 +8,7 @@
 #endif
 
 #ifdef __cplusplus
-namespace TCPChat {
-
-namespace Crypto {
+namespace dcrypt {
 #endif
 
 EVP_PKEY *GenerateKey();
@@ -23,9 +21,7 @@ bool Verify(char *message, unsigned char *signature, EVP_PKEY *pubkey);
 unsigned char *GenerateRandomBytes(int size);
 
 #ifdef __cplusplus
-}  // namespace Crypto
-
-}  // namespace TCPChat
+}  // namespace dcrypt
 #endif
 
 #endif /* !DCRYPT_H */
