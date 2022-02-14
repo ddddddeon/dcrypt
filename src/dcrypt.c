@@ -52,6 +52,7 @@ bool SetKey(BIO *bio, EVP_PKEY *key, bool is_private) {
     ret = PEM_write_bio_PUBKEY(bio, key);
   }
   CHECK_EQUALS(1, ret, return false);
+
   return true;
 }
 
