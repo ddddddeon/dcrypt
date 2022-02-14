@@ -127,7 +127,8 @@ unsigned char *KeyToString(DCRYPT_PKEY *key, bool is_private) {
                   return NULL);
 
   int key_length = BIO_pending(key_BIO);
-  unsigned char *key_string = (unsigned char *)malloc(key_length + 1);
+  unsigned char *key_string =
+      (unsigned char *)calloc(sizeof(unsigned char *), key_length + 1);
   CHECK_EQUAL(NULL, key_string, "Could not allocate memory for key string",
               return NULL);
 
@@ -183,7 +184,7 @@ unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
   CHECK_MD(EVP_DigestSignFinal(ctx, NULL, &sig_length), return NULL);
 
   unsigned char *sig = NULL;
-  sig = (unsigned char *)malloc(sig_length);
+  sig = (unsigned char *)calloc(sizeof(unsigned char *), sig_length);
   CHECK_EQUAL(NULL, sig, "Could not allocate memory for signature",
               return NULL);
   CHECK_MD(EVP_DigestSignFinal(ctx, sig, &sig_length), return NULL);
@@ -212,7 +213,7 @@ bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
 }
 
 unsigned char *GenerateRandomBytes(int size) {
-  unsigned char *bytes = (unsigned char *)malloc(size);
+  unsigned char *bytes = (unsigned char *)calloc(sizeof(unsigned char *), size);
   CHECK_EQUAL(NULL, bytes, "Could not allocate memory for random bytes",
               return NULL);
 

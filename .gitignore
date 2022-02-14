@@ -1,3 +1,6 @@
 **/.vscode
 **/bin
 **/id_rsa*
+**/example_rsa*
+**/*.o
+**/*.so
