@@ -38,7 +38,6 @@ EVP_PKEY *GenerateKey() {
   EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048);
   EVP_PKEY *key = NULL;
   EVP_PKEY_keygen(ctx, &key);
-
   EVP_PKEY_CTX_free(ctx);
   return key;
 }
