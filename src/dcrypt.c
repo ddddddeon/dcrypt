@@ -6,6 +6,10 @@
 #include <openssl/rsa.h>
 #include <string.h>
 
+#ifndef MIN_RSA_BITS
+#define MIN_RSA_BITS 1024
+#endif
+
 #define HANDLE_ERROR(message, handle)                    \
   do {                                                   \
     printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
@@ -33,7 +37,13 @@
 namespace dcrypt {
 #endif
 
-EVP_PKEY *GenerateKey() {
+EVP_PKEY *GenerateKey(int bits) {
+  if (bits < MIN_RSA_BITS) {
+    printf("I'm afraid I can't let you generate a key shorter than %d bits.\n",
+           MIN_RSA_BITS);
+    return NULL;
+  }
+
   EVP_PKEY_CTX *ctx = NULL;
   ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
   CHECK_EQUAL(NULL, ctx, "Could not create EVP_PKEY context", return NULL);
@@ -41,7 +51,7 @@ EVP_PKEY *GenerateKey() {
   int ret = EVP_PKEY_keygen_init(ctx);
   CHECK_NOT_EQUAL(1, ret, "Could not initialize EVP_PKEY context", return NULL);
 
-  EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048);
+  EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits);
   EVP_PKEY *key = NULL;
   EVP_PKEY_keygen(ctx, &key);
   EVP_PKEY_CTX_free(ctx);

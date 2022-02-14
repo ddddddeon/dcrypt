@@ -7,8 +7,11 @@
 #include "../src/dcrypt.h"
 
 int main(int argc, char* argv[]) {
-  EVP_PKEY* privkey = GenerateKey();
+  EVP_PKEY* privkey = GenerateKey(2048);
   assert(privkey != NULL);
+
+  EVP_PKEY* short_privkey = GenerateKey(512);
+  assert(short_privkey == NULL);
 
   unsigned char* privkey_string = KeyToString(privkey, true);
   assert(privkey_string != NULL);
@@ -109,6 +112,7 @@ int main(int argc, char* argv[]) {
   free(privkey_string);
   free(pubkey_string);
   free(pubkey_string2);
+  EVP_PKEY_free(short_privkey);
   EVP_PKEY_free(privkey);
 
   return 0;
