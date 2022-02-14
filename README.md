@@ -25,10 +25,6 @@ sudo make install
 #include <assert.h>
 
 int main(int argc, char *argv[]) {
-#include <assert.h>
-#include <dcrypt.h>
-
-int main(int argc, char *argv[]) {
   // Generate a 4096-bit RSA key
   DCRYPT_PKEY *private_key = GenerateKey(2048);
   assert(private_key != NULL);
