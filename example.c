@@ -32,6 +32,6 @@ int main(int argc, char *argv[]) {
   assert(verified == true);
 
   free(signature);
-  free(public_key);
-  free(private_key);
+  DCRYPT_PKEY_free(public_key);
+  DCRYPT_PKEY_free(private_key);
 }

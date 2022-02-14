@@ -114,8 +114,8 @@ int main(int argc, char* argv[]) {
   free(privkey_string);
   free(pubkey_string);
   free(pubkey_string2);
-  EVP_PKEY_free(short_privkey);
-  EVP_PKEY_free(privkey);
+  DCRYPT_PKEY_free(short_privkey);
+  DCRYPT_PKEY_free(privkey);
 
   return 0;
 }

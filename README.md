@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
   bool verified = Verify(message, signature, public_key);
   assert(verified == true);
 
+  DCRYPT_PKEY_free(private_key);
+  DCRYPT_PKEY_free(public_key);
   free(signature);
-  free(public_key);
-  free(private_key);
 ```
 
 ## TODOs

@@ -7,9 +7,27 @@
 #include <stdbool.h>
 #endif
 
+#ifndef DCRYPT_MIN_RSA_BITS
+#define DCRYPT_MIN_RSA_BITS 1024
+#endif
+
+#ifndef DCRYPT_MAX_RSA_BITS
+#define DCRYPT_MAX_RSA_BITS 65535
+#endif
+
+#ifndef DCRYPT_VERBOSE
+#define DCRYPT_VERBOSE 0
+#else
+#define DCRYPT_VERBOSE 1
+#endif
 #ifdef __cplusplus
 namespace dcrypt {
 #endif
+
+#define DCRYPT_PKEY_free(key) \
+  do {                        \
+    EVP_PKEY_free(key);       \
+  } while (0)
 
 typedef EVP_PKEY DCRYPT_PKEY;
 
