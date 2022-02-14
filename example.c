@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
   assert(signature != NULL);
 
   // Verify a message with the public key
+  // Pass in the key length so Verify() knows how big to make the signature
   bool verified = Verify(message, signature, public_key, KEY_LENGTH);
   assert(verified == true);
 
