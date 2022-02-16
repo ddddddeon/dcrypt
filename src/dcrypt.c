@@ -168,7 +168,7 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   CHECK_MD(EVP_DigestSignFinal(ctx, NULL, &sig_length), return NULL);
 
   unsigned char *sig = NULL;
-  sig = (unsigned char *)calloc(sizeof(unsigned char), sig_length);
+  sig = (unsigned char *)calloc(sig_length, sizeof(unsigned char));
   CHECK_EQUAL(NULL, sig, "Could not allocate memory for signature",
               return NULL);
   CHECK_MD(EVP_DigestSignFinal(ctx, sig, &sig_length), return NULL);
@@ -210,7 +210,7 @@ unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey) {
     return NULL;
   }
 
-  unsigned char *ciphertext = calloc(sizeof(unsigned char), key_size);
+  unsigned char *ciphertext = calloc(key_size, sizeof(unsigned char));
   CHECK_EQUAL(ciphertext, NULL, "Could not allocate memory for ciphertext",
               return NULL);
 
@@ -226,7 +226,7 @@ unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey) {
   int size = RSA_size(rsa);
   CHECK_EQUAL(rsa, NULL, "Could not load RSA private key", return NULL);
 
-  unsigned char *plaintext = calloc(sizeof(unsigned char), size);
+  unsigned char *plaintext = calloc(size, sizeof(unsigned char));
   CHECK_EQUAL(plaintext, NULL, "Could not allocate memory for decrypted text",
               return NULL);
 
@@ -238,7 +238,7 @@ unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey) {
 }
 
 unsigned char *GenerateRandomBytes(int size) {
-  unsigned char *bytes = (unsigned char *)calloc(sizeof(unsigned char), size);
+  unsigned char *bytes = (unsigned char *)calloc(size, sizeof(unsigned char));
   CHECK_EQUAL(NULL, bytes, "Could not allocate memory for random bytes",
               return NULL);
 
