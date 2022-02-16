@@ -218,6 +218,7 @@ unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey) {
                                ciphertext, rsa, RSA_PKCS1_OAEP_PADDING);
   CHECK_EQUAL(len, -1, "Could not RSA encrypt with public key", return NULL);
 
+  RSA_free(rsa);
   return ciphertext;
 }
 
@@ -234,6 +235,7 @@ unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey) {
                                 RSA_PKCS1_OAEP_PADDING);
   CHECK_EQUAL(len, -1, "Could not RSA decrypt with private key", return NULL);
 
+  RSA_free(rsa);
   return plaintext;
 }
 
