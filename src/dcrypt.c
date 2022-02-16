@@ -248,5 +248,3 @@ unsigned char *GenerateRandomBytes(int size) {
   bytes[size - 1] = '\0';
   return bytes;
 }
-
-// TODO generate an AES key, and encrypt/decrypt instead of sign/verify

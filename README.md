@@ -80,6 +80,5 @@ int main(int argc, char *argv[]) {
 ```
 
 ## TODOs
-- Encrypt/Decrypt using RSA keys
 - AES key creation
 - Encrypt/Decrypt using AES key
