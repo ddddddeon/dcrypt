@@ -36,9 +36,21 @@ int main(int argc, char *argv[]) {
   bool verified = RSAVerify((char *)message, signature, public_key, KEY_LENGTH);
   assert(verified == true);
 
-  // Keys, byte arrays & signatures are allocated & must be freed by the caller
+  // Encrypt a string with the public key
+  unsigned char *ciphertext = RSAEncrypt("hello alice", public_key);
+
+  // Decrypt a string with the private key
+  unsigned char *plaintext = RSADecrypt(ciphertext, private_key);
+
+  // hello alice
+  printf("%s\n", plaintext);
+
+  // Keys, byte arrays & signatures are allocated & must be freed by the
+  // caller
   DCRYPT_PKEY_free(private_key);
   DCRYPT_PKEY_free(public_key);
   free(message);
   free(signature);
+  free(ciphertext);
+  free(plaintext);
 }

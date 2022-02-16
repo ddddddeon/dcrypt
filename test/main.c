@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
   unsigned char* plaintext = RSADecrypt(ciphertext, privkey);
   printf("%s\n", plaintext);
 
-  unsigned char* ciphertext2 = RSAEncrypt(sig2, pubkey);
+  unsigned char* ciphertext2 = RSAEncrypt((char*)sig2, pubkey);
   if (ciphertext2 == NULL) {
     printf(
         "Didn't try to RSA encrypt plaintext longer than the key length-- "
