@@ -158,10 +158,7 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
-  if (ctx == NULL) {
-    printf("%s\n", "Could not initialize EVP context");
-    return NULL;
-  }
+  CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return false);
 
   CHECK_MD(EVP_DigestSignInit(ctx, NULL, EVP_sha256(), NULL, key), return NULL);
   CHECK_MD(EVP_DigestSignUpdate(ctx, message, strlen(message)), return NULL);
@@ -183,10 +180,7 @@ bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
-  if (ctx == NULL) {
-    printf("%s\n", "Could not initialize EVP context");
-    return false;
-  }
+  CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return false);
 
   CHECK_MD(EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey),
            return false);
