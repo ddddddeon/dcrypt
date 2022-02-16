@@ -142,7 +142,11 @@ int main(int argc, char* argv[]) {
   free(privkey_string);
   free(pubkey_string);
   free(pubkey_string2);
-  DCRYPT_PKEY_free(short_privkey);
+  free(opened_pubkey_string);
+  free(opened_privkey_string);
+  DCRYPT_PKEY_free(opened_pubkey);
+  DCRYPT_PKEY_free(opened_privkey);
+  DCRYPT_PKEY_free(pubkey);
   DCRYPT_PKEY_free(privkey);
 
   return 0;
