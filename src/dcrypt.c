@@ -178,8 +178,8 @@ bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
   RSA *rsa = EVP_PKEY_get1_RSA(pubkey);
   size_t sig_length = RSA_size(rsa);
   RSA_free(rsa);
-  EVP_MD_CTX *ctx = NULL;
 
+  EVP_MD_CTX *ctx = NULL;
   ctx = EVP_MD_CTX_create();
   CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return false);
 
