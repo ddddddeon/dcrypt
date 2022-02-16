@@ -38,8 +38,7 @@ unsigned char *RSAKeyToString(DCRYPT_PKEY *privkey, bool is_private);
 DCRYPT_PKEY *RSAFileToKey(char *in_file, bool is_private);
 DCRYPT_PKEY *RSAStringToKey(unsigned char *key_string, bool is_private);
 unsigned char *RSASign(char *message, DCRYPT_PKEY *key);
-bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
-               int key_length);
+bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey);
 unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey);
 unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey);
 unsigned char *GenerateRandomBytes(int size);

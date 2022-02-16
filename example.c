@@ -32,8 +32,7 @@ int main(int argc, char *argv[]) {
   assert(signature != NULL);
 
   // Verify a message with the public key
-  // Pass in the key length so Verify() knows how big to make the signature
-  bool verified = RSAVerify((char *)message, signature, public_key, KEY_LENGTH);
+  bool verified = RSAVerify((char *)message, signature, public_key);
   assert(verified == true);
 
   // Encrypt a string with the public key

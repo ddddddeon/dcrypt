@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
   printf("Verifying message with public key...\n");
 
-  bool verified = RSAVerify(message, sig, opened_pubkey, KEY_LENGTH);
+  bool verified = RSAVerify(message, sig, opened_pubkey);
   if (verified) {
     printf("Verified! Signature is valid for message: %s\n", message);
   } else {
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 
   unsigned char *sig2 = (unsigned char *) "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf";
 
-  bool verified2 = RSAVerify(message, sig2, opened_pubkey, KEY_LENGTH);
+  bool verified2 = RSAVerify(message, sig2, opened_pubkey);
   if (verified2) {
     printf("Verified?! This shouldn't succeed...\n");
     assert(false);
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
   }
 
   char* message2 = "chris is not cool?";
-  bool verified3 = RSAVerify(message2, sig, opened_pubkey, KEY_LENGTH);
+  bool verified3 = RSAVerify(message2, sig, opened_pubkey);
   if (verified3) {
     printf("Verified?! This shouldn't succeed...\n");
     assert(false);

@@ -177,9 +177,9 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   return sig;
 }
 
-bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
-               int key_length) {
-  size_t sig_length = key_length / sizeof(unsigned char *);
+bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
+  RSA *rsa = EVP_PKEY_get1_RSA(pubkey);
+  size_t sig_length = RSA_size(rsa);
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
