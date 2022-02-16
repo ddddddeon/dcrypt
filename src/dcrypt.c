@@ -199,8 +199,8 @@ unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey) {
   if ((sizeof(char) * strlen(message)) >= key_size) {
     printf(
         "Plaintext cannot be larger than the RSA key size (%d bytes). "
-        "What you probably want to do is RSA-encrypt an AES key, then "
-        "use that to do your encryption/decryption.\n",
+        "What you probably want to do is RSA-encrypt an AES key, send it "
+        "to the recipient, then use that to do your encryption/decryption.\n",
         key_size);
     return NULL;
   }
