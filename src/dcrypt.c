@@ -112,7 +112,7 @@ unsigned char *RSAKeyToString(DCRYPT_PKEY *key, bool is_private) {
 
   int key_length = BIO_pending(key_BIO);
   unsigned char *key_string =
-      (unsigned char *)calloc(sizeof(unsigned char), key_length + 1);
+      (unsigned char *)calloc(key_length + 1, sizeof(unsigned char));
   CHECK_EQUAL(NULL, key_string, "Could not allocate memory for key string",
               return NULL);
 
