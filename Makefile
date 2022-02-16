@@ -57,4 +57,4 @@ all: $(NAME) findBin install
 rebuild: clean $(NAME) install
 
 flush:
-	rm ./id_rsa*;
+	rm **_rsa*;

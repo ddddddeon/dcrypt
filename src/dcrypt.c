@@ -30,7 +30,7 @@
 #define CHECK_MD(ret, handle) \
   CHECK_NOT_EQUAL(1, ret, "Message Digest failed", EVP_MD_CTX_free(ctx); handle)
 
-DCRYPT_PKEY *GenerateKey(int bits) {
+DCRYPT_PKEY *RSAGenerateKey(int bits) {
   if (bits < DCRYPT_MIN_RSA_BITS || bits > DCRYPT_MAX_RSA_BITS) {
     if (DCRYPT_VERBOSE == 1) {
       printf(
@@ -55,7 +55,7 @@ DCRYPT_PKEY *GenerateKey(int bits) {
   return key;
 }
 
-bool SetKey(BIO *bio, DCRYPT_PKEY *key, bool is_private) {
+bool RSASetKey(BIO *bio, DCRYPT_PKEY *key, bool is_private) {
   int ret = 0;
   if (is_private) {
     ret = PEM_write_bio_PrivateKey(bio, key, NULL, NULL, 0, 0, NULL);
@@ -67,7 +67,7 @@ bool SetKey(BIO *bio, DCRYPT_PKEY *key, bool is_private) {
   return true;
 }
 
-DCRYPT_PKEY *GetKey(BIO *bio, bool is_private) {
+DCRYPT_PKEY *RSAGetKey(BIO *bio, bool is_private) {
   RSA *rsa = NULL;
   if (is_private) {
     PEM_read_bio_RSAPrivateKey(bio, &rsa, NULL, NULL);
@@ -84,26 +84,26 @@ DCRYPT_PKEY *GetKey(BIO *bio, bool is_private) {
   return key;
 }
 
-bool KeyToFile(DCRYPT_PKEY *key, char *out_file, bool is_private) {
+bool RSAKeyToFile(DCRYPT_PKEY *key, char *out_file, bool is_private) {
   BIO *file_BIO = NULL;
   file_BIO = BIO_new_file(out_file, "w");
   CHECK_EQUAL(NULL, file_BIO, "Could not load file for writing", return false);
 
-  int ret = SetKey(file_BIO, key, is_private);
+  int ret = RSASetKey(file_BIO, key, is_private);
   BIO_free(file_BIO);
   CHECK_NOT_EQUAL(true, ret, "Could not write key to file", return false);
 
   return true;
 }
 
-unsigned char *KeyToString(DCRYPT_PKEY *key, bool is_private) {
+unsigned char *RSAKeyToString(DCRYPT_PKEY *key, bool is_private) {
   int ret = 0;
   BIO *key_BIO = NULL;
   key_BIO = BIO_new(BIO_s_mem());
   CHECK_EQUAL(NULL, key_BIO, "Could not allocate memory for writing",
               return NULL);
 
-  ret = SetKey(key_BIO, key, is_private);
+  ret = RSASetKey(key_BIO, key, is_private);
   CHECK_NOT_EQUAL(1, ret, "Could not write key to string", BIO_free(key_BIO);
                   return NULL);
 
@@ -123,34 +123,34 @@ unsigned char *KeyToString(DCRYPT_PKEY *key, bool is_private) {
   return key_string;
 }
 
-DCRYPT_PKEY *FileToKey(char *in_file, bool is_private) {
+DCRYPT_PKEY *RSAFileToKey(char *in_file, bool is_private) {
   BIO *file_BIO = NULL;
   file_BIO = BIO_new_file(in_file, "r");
   CHECK_EQUAL(NULL, file_BIO, "Could not open file for reading", return NULL);
 
   EVP_PKEY *key = NULL;
-  key = GetKey(file_BIO, is_private);
+  key = RSAGetKey(file_BIO, is_private);
   BIO_free(file_BIO);
   CHECK_EQUAL(NULL, key, "Could not get key from file", return NULL);
 
   return key;
 }
 
-DCRYPT_PKEY *StringToKey(unsigned char *key_string, bool is_private) {
+DCRYPT_PKEY *RSAStringToKey(unsigned char *key_string, bool is_private) {
   BIO *key_BIO = NULL;
   key_BIO = BIO_new_mem_buf(key_string, -1);
   CHECK_EQUAL(NULL, key_BIO, "Could not allocate memory buffer for string",
               return NULL);
 
   EVP_PKEY *key = NULL;
-  key = GetKey(key_BIO, is_private);
+  key = RSAGetKey(key_BIO, is_private);
   BIO_free(key_BIO);
   CHECK_EQUAL(NULL, key, "Could not get key from string", return NULL);
 
   return key;
 }
 
-unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
+unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   size_t sig_length;
   EVP_MD_CTX *ctx = NULL;
 
@@ -174,8 +174,8 @@ unsigned char *Sign(char *message, DCRYPT_PKEY *key) {
   return sig;
 }
 
-bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
-            int key_length) {
+bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
+               int key_length) {
   size_t sig_length = key_length / sizeof(unsigned char *);
   EVP_MD_CTX *ctx = NULL;
 
@@ -193,6 +193,10 @@ bool Verify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
   EVP_MD_CTX_free(ctx);
   return true;
 }
+
+unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey);
+
+unsigned char *RSADecrypt(char *message, DCRYPT_PKEY *privkey);
 
 unsigned char *GenerateRandomBytes(int size) {
   unsigned char *bytes = (unsigned char *)calloc(sizeof(unsigned char *), size);

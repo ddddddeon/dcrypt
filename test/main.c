@@ -8,39 +8,39 @@
 #define KEY_LENGTH 2048
 
 int main(int argc, char* argv[]) {
-  DCRYPT_PKEY* privkey = GenerateKey(KEY_LENGTH);
+  DCRYPT_PKEY* privkey = RSAGenerateKey(KEY_LENGTH);
   assert(privkey != NULL);
 
-  DCRYPT_PKEY* short_privkey = GenerateKey(512);
+  DCRYPT_PKEY* short_privkey = RSAGenerateKey(512);
   assert(short_privkey == NULL);
 
-  DCRYPT_PKEY* long_privkey = GenerateKey(65536);
+  DCRYPT_PKEY* long_privkey = RSAGenerateKey(65536);
   assert(long_privkey == NULL);
 
-  unsigned char* privkey_string = KeyToString(privkey, true);
+  unsigned char* privkey_string = RSAKeyToString(privkey, true);
   assert(privkey_string != NULL);
 
-  unsigned char* pubkey_string = KeyToString(privkey, false);
+  unsigned char* pubkey_string = RSAKeyToString(privkey, false);
   assert(pubkey_string != NULL);
 
-  DCRYPT_PKEY* pubkey = StringToKey(pubkey_string, false);
+  DCRYPT_PKEY* pubkey = RSAStringToKey(pubkey_string, false);
   assert(pubkey != NULL);
 
-  unsigned char* pubkey_string2 = KeyToString(pubkey, false);
+  unsigned char* pubkey_string2 = RSAKeyToString(pubkey, false);
   assert(pubkey_string2 != NULL);
   assert(strcmp((char*)pubkey_string, (char*)pubkey_string2) == 0);
 
-  assert(KeyToFile(privkey, "id_rsa", true));
-  assert(KeyToFile(privkey, "id_rsa.pub", false));
+  assert(RSAKeyToFile(privkey, "id_rsa", true));
+  assert(RSAKeyToFile(privkey, "id_rsa.pub", false));
 
-  DCRYPT_PKEY* opened_privkey = FileToKey("./id_rsa", true);
-  DCRYPT_PKEY* opened_pubkey = FileToKey("./id_rsa.pub", false);
+  DCRYPT_PKEY* opened_privkey = RSAFileToKey("./id_rsa", true);
+  DCRYPT_PKEY* opened_pubkey = RSAFileToKey("./id_rsa.pub", false);
 
   assert(opened_privkey != NULL);
   assert(opened_pubkey != NULL);
 
-  unsigned char* opened_privkey_string = KeyToString(opened_privkey, true);
-  unsigned char* opened_pubkey_string = KeyToString(opened_pubkey, false);
+  unsigned char* opened_privkey_string = RSAKeyToString(opened_privkey, true);
+  unsigned char* opened_pubkey_string = RSAKeyToString(opened_pubkey, false);
 
   assert(opened_privkey_string != NULL);
   assert(opened_pubkey_string != NULL);
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
   char* message = "chris is cool";
   printf("Message: %s\n", message);
 
-  unsigned char* sig = Sign(message, opened_privkey);
+  unsigned char* sig = RSASign(message, opened_privkey);
   if (sig == NULL) {
     printf("Could not generate signature!\n");
     return false;
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
   printf("Verifying message with public key...\n");
 
-  bool verified = Verify(message, sig, opened_pubkey, KEY_LENGTH);
+  bool verified = RSAVerify(message, sig, opened_pubkey, KEY_LENGTH);
   if (verified) {
     printf("Verified! Signature is valid for message: %s\n", message);
   } else {
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 
   unsigned char *sig2 = (unsigned char *) "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf";
 
-  bool verified2 = Verify(message, sig2, opened_pubkey, KEY_LENGTH);
+  bool verified2 = RSAVerify(message, sig2, opened_pubkey, KEY_LENGTH);
   if (verified2) {
     printf("Verified?! This shouldn't succeed...\n");
     return false;
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
   }
 
   char* message2 = "chris is not cool?";
-  bool verified3 = Verify(message2, sig, opened_pubkey, KEY_LENGTH);
+  bool verified3 = RSAVerify(message2, sig, opened_pubkey, KEY_LENGTH);
   if (verified3) {
     printf("Verified?! This shouldn't succeed...\n");
     return false;
