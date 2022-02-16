@@ -67,8 +67,7 @@ int main(int argc, char *argv[]) {
   // hello alice
   printf("%s\n", plaintext);
 
-  // Keys, byte arrays & signatures are allocated & must be freed by the
-  // caller
+  // Keys, byte arrays & signatures are allocated & must be freed by the caller
   DCRYPT_PKEY_free(private_key);
   DCRYPT_PKEY_free(public_key);
   free(message);
