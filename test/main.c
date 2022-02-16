@@ -114,6 +114,14 @@ int main(int argc, char* argv[]) {
   unsigned char* plaintext = RSADecrypt(ciphertext, privkey);
   printf("%s\n", plaintext);
 
+  unsigned char* plaintext2 = RSADecrypt(ciphertext, pubkey);
+  if (plaintext2 == NULL) {
+    printf("Couldn't RSA decrypt ciphertext using only public key-- good!\n");
+  } else {
+    printf("Somehow RSA decrypted ciphertext with only public key\n");
+    assert(false);
+  }
+
   unsigned char* ciphertext2 = RSAEncrypt((char*)sig2, pubkey);
   if (ciphertext2 == NULL) {
     printf(
@@ -125,6 +133,8 @@ int main(int argc, char* argv[]) {
   }
 
   free(ciphertext2);
+  free(plaintext2);
+  free(plaintext);
   free(ciphertext);
   free(bytes2);
   free(bytes);
