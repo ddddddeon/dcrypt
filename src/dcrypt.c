@@ -196,7 +196,7 @@ unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey) {
   CHECK_EQUAL(rsa, NULL, "Could not load RSA public key", return NULL);
 
   int key_size = RSA_size(rsa);
-  if ((sizeof(char) * strlen(message)) >= key_size) {
+  if ((sizeof(char) * strlen(message)) > key_size) {
     printf(
         "Plaintext cannot be larger than the RSA key size (%d bytes). "
         "What you probably want to do is RSA-encrypt an AES key, send it "
