@@ -41,7 +41,7 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key);
 bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
                int key_length);
 unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey);
-unsigned char *RSADecrypt(char *message, DCRYPT_PKEY *privkey);
+unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey);
 unsigned char *GenerateRandomBytes(int size);
 
 #ifdef __cplusplus

@@ -1,16 +1,19 @@
 #include <dcrypt.h>
+#include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <string.h>
 
-#define HANDLE_ERROR(message, handle)                      \
-  do {                                                     \
-    if (DCRYPT_VERBOSE == 1) {                             \
-      printf("%s (%s:%d)\n", message, __FILE__, __LINE__); \
-    }                                                      \
-    handle;                                                \
+#define HANDLE_ERROR(message, handle)                          \
+  do {                                                         \
+    if (DCRYPT_VERBOSE == 1) {                                 \
+      ERR_load_crypto_strings();                               \
+      printf("%s (%s:%d)\n", message, __FILE__, __LINE__);     \
+      printf("%s\n", ERR_error_string(ERR_get_error(), NULL)); \
+    }                                                          \
+    handle;                                                    \
   } while (0)
 
 #define CHECK_NOT_EQUAL(val, ret, message, handle) \
@@ -109,7 +112,7 @@ unsigned char *RSAKeyToString(DCRYPT_PKEY *key, bool is_private) {
 
   int key_length = BIO_pending(key_BIO);
   unsigned char *key_string =
-      (unsigned char *)calloc(sizeof(unsigned char *), key_length + 1);
+      (unsigned char *)calloc(sizeof(unsigned char), key_length + 1);
   CHECK_EQUAL(NULL, key_string, "Could not allocate memory for key string",
               return NULL);
 
@@ -165,7 +168,7 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   CHECK_MD(EVP_DigestSignFinal(ctx, NULL, &sig_length), return NULL);
 
   unsigned char *sig = NULL;
-  sig = (unsigned char *)calloc(sizeof(unsigned char *), sig_length);
+  sig = (unsigned char *)calloc(sizeof(unsigned char), sig_length);
   CHECK_EQUAL(NULL, sig, "Could not allocate memory for signature",
               return NULL);
   CHECK_MD(EVP_DigestSignFinal(ctx, sig, &sig_length), return NULL);
@@ -194,12 +197,48 @@ bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey,
   return true;
 }
 
-unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey);
+unsigned char *RSAEncrypt(char *message, DCRYPT_PKEY *pubkey) {
+  RSA *rsa = EVP_PKEY_get1_RSA(pubkey);
+  CHECK_EQUAL(rsa, NULL, "Could not load RSA public key", return NULL);
 
-unsigned char *RSADecrypt(char *message, DCRYPT_PKEY *privkey);
+  int key_size = RSA_size(rsa);
+  if ((sizeof(char) * strlen(message)) >= key_size) {
+    printf(
+        "Plaintext to RSA encrypt can not be larger than the key size (%d "
+        "bytes)\n",
+        key_size);
+    return NULL;
+  }
+
+  unsigned char *ciphertext = calloc(sizeof(unsigned char), key_size);
+  CHECK_EQUAL(ciphertext, NULL, "Could not allocate memory for ciphertext",
+              return NULL);
+
+  int len = RSA_public_encrypt(strlen(message) + 1, (unsigned char *)message,
+                               ciphertext, rsa, RSA_PKCS1_OAEP_PADDING);
+  CHECK_EQUAL(len, -1, "Could not RSA encrypt with public key", return NULL);
+
+  return ciphertext;
+}
+
+unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey) {
+  RSA *rsa = EVP_PKEY_get1_RSA(privkey);
+  int size = RSA_size(rsa);
+  CHECK_EQUAL(rsa, NULL, "Could not load RSA private key", return NULL);
+
+  unsigned char *plaintext = calloc(sizeof(unsigned char), size);
+  CHECK_EQUAL(plaintext, NULL, "Could not allocate memory for decrypted text",
+              return NULL);
+
+  int len = RSA_private_decrypt(size, (unsigned char *)message, plaintext, rsa,
+                                RSA_PKCS1_OAEP_PADDING);
+  CHECK_EQUAL(len, -1, "Could not RSA decrypt with private key", return NULL);
+
+  return plaintext;
+}
 
 unsigned char *GenerateRandomBytes(int size) {
-  unsigned char *bytes = (unsigned char *)calloc(sizeof(unsigned char *), size);
+  unsigned char *bytes = (unsigned char *)calloc(sizeof(unsigned char), size);
   CHECK_EQUAL(NULL, bytes, "Could not allocate memory for random bytes",
               return NULL);
 

@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
   unsigned char* sig = RSASign(message, opened_privkey);
   if (sig == NULL) {
     printf("Could not generate signature!\n");
-    return false;
+    assert(false);
   } else {
     printf("Signed message with private key-- signature: %s\n", sig);
   }
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     printf("Verified! Signature is valid for message: %s\n", message);
   } else {
     printf("Not Verified...\n");
-    return false;
+    assert(false);
   }
 
   unsigned char *sig2 = (unsigned char *) "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf";
@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
   bool verified2 = RSAVerify(message, sig2, opened_pubkey, KEY_LENGTH);
   if (verified2) {
     printf("Verified?! This shouldn't succeed...\n");
-    return false;
+    assert(false);
   } else {
     printf("Not verified using bogus signature-- good!\n");
   }
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
   bool verified3 = RSAVerify(message2, sig, opened_pubkey, KEY_LENGTH);
   if (verified3) {
     printf("Verified?! This shouldn't succeed...\n");
-    return false;
+    assert(false);
   } else {
     printf("Not verified using bogus message-- good!\n");
   }
@@ -110,6 +110,22 @@ int main(int argc, char* argv[]) {
   }
   printf("\n");
 
+  unsigned char* ciphertext = RSAEncrypt("chris is cool", pubkey);
+  unsigned char* plaintext = RSADecrypt(ciphertext, privkey);
+  printf("%s\n", plaintext);
+
+  unsigned char* ciphertext2 = RSAEncrypt(sig2, pubkey);
+  if (ciphertext2 == NULL) {
+    printf(
+        "Didn't try to RSA encrypt plaintext longer than the key length-- "
+        "good!\n");
+  } else {
+    printf("Tried to RSA encrypt plaintext longer than the key length\n");
+    assert(false);
+  }
+
+  free(ciphertext2);
+  free(ciphertext);
   free(bytes2);
   free(bytes);
   free(sig);
