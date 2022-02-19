@@ -111,6 +111,7 @@ unsigned char *RSAKeyToString(DCRYPT_PKEY *key, bool is_private) {
                   return NULL);
 
   int key_length = BIO_pending(key_BIO);
+
   unsigned char *key_string =
       (unsigned char *)calloc(key_length + 1, sizeof(unsigned char));
   CHECK_EQUAL(NULL, key_string, "Could not allocate memory for key string",
@@ -158,7 +159,7 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
   EVP_MD_CTX *ctx = NULL;
 
   ctx = EVP_MD_CTX_create();
-  CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return false);
+  CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return NULL);
 
   CHECK_MD(EVP_DigestSignInit(ctx, NULL, EVP_sha256(), NULL, key), return NULL);
   CHECK_MD(EVP_DigestSignUpdate(ctx, message, strlen(message)), return NULL);
@@ -170,8 +171,15 @@ unsigned char *RSASign(char *message, DCRYPT_PKEY *key) {
               return NULL);
   CHECK_MD(EVP_DigestSignFinal(ctx, sig, &sig_length), return NULL);
 
+  int encoded_length = 4 * (sig_length + 1) / 3;
+  unsigned char *sig_encoded = (unsigned char *)calloc(encoded_length + 1, 1);
+  int encoded = EVP_EncodeBlock(sig_encoded, sig, sig_length);
+  CHECK_NOT_EQUAL(encoded, encoded_length, "Could not Base64 encode signature ",
+                  return NULL);
+
+  free(sig);
   EVP_MD_CTX_free(ctx);
-  return sig;
+  return sig_encoded;
 }
 
 bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
@@ -183,11 +191,19 @@ bool RSAVerify(char *message, unsigned char *signature, DCRYPT_PKEY *pubkey) {
   ctx = EVP_MD_CTX_create();
   CHECK_EQUAL(ctx, NULL, "Could not initialize EVP context", return false);
 
+  int decoded_length = 3 * strlen((char *)signature) / 4;
+  unsigned char *sig_decoded = (unsigned char *)calloc(decoded_length + 1, 1);
+  int decoded =
+      EVP_DecodeBlock(sig_decoded, signature, strlen((char *)signature));
+  CHECK_NOT_EQUAL(decoded, decoded_length, "Could not Base64 decode signature",
+                  return false);
+
   CHECK_MD(EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey),
            return false);
   CHECK_MD(EVP_DigestVerifyUpdate(ctx, message, strlen(message)), return false);
-  CHECK_MD(EVP_DigestVerifyFinal(ctx, signature, sig_length), return false);
+  CHECK_MD(EVP_DigestVerifyFinal(ctx, sig_decoded, sig_length), return false);
 
+  free(sig_decoded);
   EVP_MD_CTX_free(ctx);
   return true;
 }
@@ -233,6 +249,12 @@ unsigned char *RSADecrypt(unsigned char *message, DCRYPT_PKEY *privkey) {
 
   RSA_free(rsa);
   return plaintext;
+}
+
+int RSAKeySize(DCRYPT_PKEY *key) {
+  RSA *rsa = EVP_PKEY_get1_RSA(key);
+  int size = RSA_size(rsa);
+  return size;
 }
 
 unsigned char *GenerateRandomBytes(int size) {

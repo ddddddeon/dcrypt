@@ -132,6 +132,9 @@ int main(int argc, char* argv[]) {
     assert(false);
   }
 
+  int key_size = RSAKeySize(pubkey);
+  printf("%d\n", key_size);
+
   free(ciphertext2);
   free(plaintext2);
   free(plaintext);
